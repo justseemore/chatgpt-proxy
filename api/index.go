@@ -19,7 +19,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 // building the fiber application
 func handler() http.HandlerFunc {
 	app := fiber.New()
-	app.Get("/*", func(ctx *fiber.Ctx) error {
+	app.Post("/*", func(ctx *fiber.Ctx) error {
 		proxyUrl := fmt.Sprintf("https://api.openai.com/%s", ctx.Params("*", ""))
 		if err := proxy.Do(ctx, proxyUrl); err != nil {
 			return err
