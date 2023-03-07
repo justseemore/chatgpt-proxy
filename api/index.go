@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/proxy"
 	"net/http"
+	"os"
 )
 
 // Handler is the main entry point of the application. Think of it like the main() method
@@ -19,8 +20,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 // building the fiber application
 func handler() http.HandlerFunc {
 	app := fiber.New()
-	app.Post("/*", func(ctx *fiber.Ctx) error {
-		proxyUrl := fmt.Sprintf("https://api.openai.com/%s", ctx.Params("*", ""))
+	app.All("/*", func(ctx *fiber.Ctx) error {
+		proxyUrl := fmt.Sprintf("https://%s/%s", os.Getenv("PROXY_DOMAIN"), ctx.Params("*", ""))
 		if err := proxy.Do(ctx, proxyUrl); err != nil {
 			return err
 		}

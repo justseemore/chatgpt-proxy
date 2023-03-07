@@ -8,7 +8,7 @@ import (
 
 func main() {
 	app := fiber.New()
-	app.Post("/*", func(ctx *fiber.Ctx) error {
+	app.All("/*", func(ctx *fiber.Ctx) error {
 		proxyUrl := fmt.Sprintf("https://api.openai.com/%s", ctx.Params("*", ""))
 		if err := proxy.Do(ctx, proxyUrl); err != nil {
 			return err
