@@ -4,5 +4,8 @@
       "source": "(.*)",
       "destination": "api/index.go"
     }
-  ]
+  ],
+  "env": {
+    "PROXY_DOMAIN":"api.openai.com"
+  }
 }

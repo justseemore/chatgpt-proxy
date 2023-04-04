@@ -20,9 +20,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 // building the fiber application
 func handler() http.HandlerFunc {
 	app := fiber.New()
-	app.Static("/", "./")
-	app.All("/v1/*", func(ctx *fiber.Ctx) error {
-		proxyUrl := fmt.Sprintf("https://%s/v1/%s", os.Getenv("PROXY_DOMAIN"), ctx.Params("*", ""))
+	app.All("/*", func(ctx *fiber.Ctx) error {
+		proxyUrl := fmt.Sprintf("https://%s/%s", os.Getenv("PROXY_DOMAIN"), ctx.Params("*", ""))
 		if err := proxy.Do(ctx, proxyUrl); err != nil {
 			return err
 		}
