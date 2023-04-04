@@ -4,11 +4,5 @@
       "source": "(.*)",
       "destination": "api/index.go"
     }
-  ],
-  "builds": [
-    {
-      "src": "*.html",
-      "use": "@vercel/views"
-    }
   ]
 }
