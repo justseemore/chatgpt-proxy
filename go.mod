@@ -1,6 +1,6 @@
 module chatgpt-proxy
 
-go 1.19
+go 1.20
 
 require (
 	github.com/gofiber/adaptor/v2 v2.1.32
