@@ -11,6 +11,12 @@ import (
 func main() {
 	app := fiber.New()
 	app.All("/*", func(ctx *fiber.Ctx) error {
+		OsAuthApiKey := os.Getenv("AUTH_API_KEY")
+		if OsAuthApiKey != "" && ctx.Get("auth-api-key", "") == OsAuthApiKey {
+			ctx.Request().Header.Del("Authorization")
+			ctx.Request().Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("OPENAI_API_KEY")))
+			ctx.Request().Header.Del("auth-api-key")
+		}
 		proxyHost, _ := strings.CutSuffix(ctx.Get("h-proxy-host", os.Getenv("PROXY_DOMAIN")), "/")
 		path, _ := strings.CutPrefix(ctx.OriginalURL(), "/")
 		proxyUrl := fmt.Sprintf("https://%s/%s", proxyHost, path)
