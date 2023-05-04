@@ -30,7 +30,7 @@ func handler() http.HandlerFunc {
 			ctx.Request().Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("OPENAI_API_KEY")))
 			ctx.Request().Header.Del("auth-api-key")
 		} else {
-			proxyHost, _ = strings.CutSuffix(ctx.Get("h-proxy-host", os.Getenv("PROXY_DOMAIN")), "/")
+			proxyHost, _ = strings.CutSuffix(ctx.Get("h-proxy-host", proxyHost), "/")
 		}
 		path, _ := strings.CutPrefix(ctx.OriginalURL(), "/")
 		proxyUrl := fmt.Sprintf("https://%s/%s", proxyHost, path)
