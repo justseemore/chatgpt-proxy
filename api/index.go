@@ -21,7 +21,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 // building the fiber application
 func handler() http.HandlerFunc {
 	app := fiber.New()
+
 	app.All("/*", func(ctx *fiber.Ctx) error {
+		OsAuthApiKey := os.Getenv("AUTH_API_KEY")
+		if OsAuthApiKey != "" && ctx.Get("auth-api-key", "") == OsAuthApiKey {
+			ctx.Request().Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("OPENAI_API_KEY")))
+		}
 		proxyHost, _ := strings.CutSuffix(ctx.Get("h-proxy-host", os.Getenv("PROXY_DOMAIN")), "/")
 		path, _ := strings.CutPrefix(ctx.OriginalURL(), "/")
 		proxyUrl := fmt.Sprintf("https://%s/%s", proxyHost, path)
