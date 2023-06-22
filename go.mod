@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/gofiber/adaptor/v2 v2.1.32
 	github.com/gofiber/fiber/v2 v2.42.0
+	github.com/sashabaranov/go-openai v1.11.3
 )
 
 require (

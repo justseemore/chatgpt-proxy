@@ -1,9 +1,12 @@
 package main
 
 import (
+	"chatgpt-proxy/utils"
+	"encoding/json"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/proxy"
+	"github.com/sashabaranov/go-openai"
 	"os"
 	"strings"
 )
@@ -17,9 +20,15 @@ func main() {
 			ctx.Request().Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("OPENAI_API_KEY")))
 			ctx.Request().Header.Del("auth-api-key")
 		}
+		if ctx.Path() == "/v1/chat/completions" {
+			var req openai.ChatCompletionRequest
+			_ = json.Unmarshal(ctx.Body(), &req)
+			if req.Stream {
+				return utils.ChatCompletionsStream(ctx)
+			}
+		}
 		proxyHost, _ := strings.CutSuffix(ctx.Get("h-proxy-host", os.Getenv("PROXY_DOMAIN")), "/")
-		path, _ := strings.CutPrefix(ctx.OriginalURL(), "/")
-		proxyUrl := fmt.Sprintf("https://%s/%s", proxyHost, path)
+		proxyUrl := fmt.Sprintf("https://%s%s", proxyHost, ctx.Path())
 		if err := proxy.Do(ctx, proxyUrl); err != nil {
 			return err
 		}
